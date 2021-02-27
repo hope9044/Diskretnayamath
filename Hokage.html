@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+<body>
+	<script>
+	
+/*
+*проверка на соответствие типа
+*проверка каждого символа массива на соответствие заданию
+*глобальные переменные r,str;
+*@param mass;
+*return r;
+*i-чётная c - цифра cicc
+*/
+//console.log('k'.match(/[a-z]/));
+var peremenn = "";
+function validate(mass) {
+    
+    var r = false;
+    var str = "";
+    for(var i=0; i<mass.length; i++) {
+        // || !parseInt(mass[i][2]) || !(mass[i][0].match(/[a-z]/))
+       // console.log(Boolean(mass[i][0].match(/[a-z]/)), (mass[i][1] % 2 == 0))
+        if ((mass[i][0].match(/[a-z]/) && (mass[i][1] % 2 == 0) && parseInt(mass[i][2]) && (mass[i][3].match(/[a-z]/)))) {
+           // console.log(mass[i][0])
+            r = true;
+        }
+        else{
+            str += "Ошибка в вводе ";
+            r = false
+        }
+        //if (typeof mass[i][4] != "undefined") {alert("Ошибка ввода по условию"); return;}
+    }
+   // console.log(r)
+    if(!r)
+        alert(str);
+    return r;
+}
+/*
+*обЬединение множеств
+*вывод всех уникальных значений из 2 множеств
+*глобальные переменные res;
+*@param A,B;
+*return res;
+*/
+	function objedi(A, B) {
+		var res = "";
+		
+		for(var i = 0; i < A.length; i++) {
+			for (var j = 0; j < B.length; j++) {
+				if (A[i]==B[j]) {B.splice(j, 1); j--;}
+			}
+		}
+        
+        for (var i = 0; i < A.length; i++) {
+            for (var j = i+1; j < A.length; j++) {
+                if (A[i]==A[j]) {A.splice(j, 1); j--;}
+            }
+        }
+        
+		for(var i=0; i<A.length; i++){
+            if(typeof A[i]=="undefined")
+                continue;
+            res += " " +A[i];
+		}
+		for(var i=0; i<=B.length; i++){
+            if(typeof B[i]=="undefined")
+                continue;
+            res += " " +B[i];
+        }
+		return "Объединение: "+res;
+	}
+/*
+*пересечение множеств
+*вывод никальных элементов которве находятся в 2 множествах одновременно 
+*глобальные переменные s;
+*@param A,B;
+*return s;
+*/ 
+    function peres(A, B) {
+        var s = "";
+        for (var i = 0; i < A.length; i++) {
+            for (var j = i+1; j < A.length; j++) {
+                if (A[i]==A[j]) {A.splice(j, 1); j--;}
+            }
+        }
+        
+        for (var i = 0; i < B.length; i++) {
+            for (var j = i+1; j < B.length; j++) {
+                if (B[i]==B[j]) {B.splice(j, 1); j--;}
+            }
+        }
+        
+        for (var i = 0; i < A.length; i++) {
+            for (var j = 0; j < B.length; j++) {
+                if (A[i]==B[j]) {s+=" " + A[i];}
+            }
+        }
+        
+        return "Пересечение: " + s;
+    }
+        
+/*
+*множество А за искличением из него B
+*вывод всех уникальных значений из множества А за исключением тех элементов которые находятся в B
+*глобальные переменные p
+*@param A,B;
+*return p;
+*/
+        function dopol(A, B) {
+            var p = "";
+            
+			for (var i = 0; i < A.length; i++) {
+				for (var j = i+1; j < A.length; j++) {
+					if (A[i]==A[j]) {A.splice(j, 1); j--;}
+				}
+			}
+			
+			for (var i = 0; i < B.length; i++) {
+				for (var j = i+1; j < B.length; j++) {
+					if (B[i]==B[j]) {B.splice(j, 1); j--;}
+				}
+			}
+			
+            for (var i = 0; i < B.length; i++) {
+                for (var j = 0; j < A.length; j++) {
+                    if (B[i]==A[j]) {A.splice(j, 1);}
+                }
+            }
+            
+            for (var i = 0; i < A.length; i++) {
+                p += " " + A[i];
+            }
+            
+            return "Дополнение: " + p;
+            
+        }
+/*
+*обЬединение множеств за искличением их пересечения
+*вывод всех уникальных значений из 2 множеств за исключением тех элементов где они повторяются 
+*глобальные переменные p
+*@param A,B;
+*return p;
+*/
+function diff(A, B) {
+     var p ="";
+     var count=0;
+	 
+	for (var i = 0; i < A.length; i++) {
+		if (A[i]==A[i+1]) {A.splice(i,1);}
+		if (typeof A[i+2]=="undefined") {
+			if (A[i]==A[i+1]) {
+				A.splice(i, 1);
+				A.splice(i, 1);
+			}
+		}
+	} 
+	
+	for (var i = 0; i < B.length; i++) {
+		if (B[i]==B[i+1]) {B.splice(i,1);}
+		if (typeof B[i+2]=="undefined") {
+			if (B[i]==B[i+1]) {
+				B.splice(i, 1);
+				B.splice(i, 1);
+			}
+		}
+	} 
+	
+	 
+	for (var i = 0; i < A.length; i++) {
+		for (var j = i+1; j < A.length; j++) {
+			if (A[i]==A[j]) {A.splice(j, 1); j--;}
+		}
+	}
+	
+	for (var i = 0; i < B.length; i++) {
+		for (var j = i+1; j < B.length; j++) {
+			if (B[i]==B[j]) {B.splice(j, 1); j--;}
+		}
+	}
+	
+    for (var i = 0; i < A.length; i++) {
+        for (var j = 0; j < B.length; j++) {
+            count = 0;
+            if (A[i]==B[j]) {
+                count++;
+                B.splice(j, 1);
+				j--;
+				if (count > 0) {A.splice(i, 1);}
+            }
+        }
+        if (count > 0) {i=-1; count = 0;}
+    }
+    
+    for (var i = 0; i < A.length; i++) {
+        p += " " + A[i];
+    }
+    
+    for (var i = 0; i < B.length; i++) {
+        p += " " + B[i];
+    }
+    
+    return "Разность: " + p;
+}
+/*
+*отрицание множества А
+*все элементы универсалльного множества за исключением множества А
+*глобальные переменные p;
+*@param A,U;
+*return p;
+*/
+    function otric(A, U) {
+        var p = "";
+        
+        for (var i = 0; i < A.length; i++) {
+            for (var j = 0; j < U.length; j++) {
+                if (A[i]==U[j]) {U.splice(j, 1); j--;}
+            }
+        }
+        
+        for (var i = 0; i<U.length; i++) {
+            p += " " + U[i];
+        }
+        
+        return "Отрицание: " + p;
+    }
+	
+        
+        
+        
+        
+        
+        
+        
+        
+	function getDataUser() {
+		var A = document.getElementById('massA').value;
+		A = A.split(' ');
+        for (var i = 0; i < A.length; i++) {
+            if (A[i] == "") {
+                A.splice(i, 1);
+                i--;
+            }
+        }
+		if(!validate(A))
+			return;
+		var U = document.getElementById('massU').value;
+		U = U.split(' ');
+        for (var i = 0; i < U.length; i++) {
+            if (U[i] == "") {
+                U.splice(i, 1);
+                i--;
+            }
+        }
+		if(!validate(U))
+			return;
+		document.getElementById('result').innerHTML = otric(A,U);
+	}
+	
+	function getDataUser1() {
+		var A = document.getElementById('massA').value;
+		A = A.split(' ');
+        for (var i = 0; i < A.length; i++) {
+            if (A[i] == "") {
+                A.splice(i, 1);
+                i--;
+            }
+        }
+		if(!validate(A))
+			return;
+		var B = document.getElementById('massB').value;
+		B = B.split(' ');
+        for (var i = 0; i < B.length; i++) {
+            if (B[i] == "") {
+                B.splice(i, 1);
+                i--;
+            }
+        }
+		if(!validate(B))
+			return;
+		document.getElementById('result').innerHTML = diff(A,B);
+	}
+	
+	function getDataUser2() {
+		var A = document.getElementById('massA').value;
+		A = A.split(' ');
+        for (var i = 0; i < A.length; i++) {
+            if (A[i] == "") {
+                A.splice(i, 1);
+                i--;
+            }
+        }
+		if( !validate(A))
+			return;
+		var B = document.getElementById('massB').value;
+		B = B.split(' ');
+        for (var i = 0; i < B.length; i++) {
+            if (B[i] == "") {
+                B.splice(i, 1);
+                i--;
+            }
+        }
+		if( !validate(B))
+			return;
+		document.getElementById('result').innerHTML = dopol(A,B);
+	}
+	
+    function getDataUser3() {
+		var A = document.getElementById('massA').value;
+		A = A.split(' ');
+        for (var i = 0; i < A.length; i++) {
+            if (A[i] == "") {
+                A.splice(i, 1);
+                i--;
+            }
+        }
+		if( !validate(A))
+			return;
+
+		var B = document.getElementById('massB').value;
+		B = B.split(' ');
+        for (var i = 0; i < B.length; i++) {
+            if (B[i] == "") {
+                B.splice(i, 1);
+                i--;
+            }
+        }
+		if( !validate(B))
+			return;
+		document.getElementById('result').innerHTML = peres(A,B);
+	}
+	
+    function getDataUser4() {
+		var A = document.getElementById('massA').value;
+        A = A.split(' ');
+        for (var i = 0; i < A.length; i++) {
+            if (A[i] == "") {
+                A.splice(i, 1);
+                i--;
+            }
+        }
+        
+		if( !validate(A))
+			return;
+
+		var B = document.getElementById('massB').value;
+        B = B.split(' ');
+        for (var i = 0; i < B.length; i++) {
+            if (B[i] == "") {
+                B.splice(i, 1);
+                i--;
+            }
+        }
+        if(!validate(B))
+        return;
+
+		document.getElementById('result').innerHTML = objedi(A,B);
+	}
+	</script>
+
+<form>
+Массив A<br> <input name="S" id='massA'> <br>
+Массив B<br> <input name="D" id='massB'> <br>
+Дополнительный массив <br> <input name="U" id='massU'> <br>
+<input type='button' value='Объединения'
+onClick="getDataUser4()">
+<input type='button' value='Пересечение'
+onClick="getDataUser3()">
+<input type='button' value='Дополнение'
+onClick="getDataUser2()">    
+<input type='button' value='Разность'
+onClick="getDataUser1()">
+<input type='button' value='Отрицание'
+onClick="getDataUser()">
+
+
+</form>
+<div id='result' style="width: 50%; margin: 0 25% 0 25%; font-size: 40px;">
+</div>
+</body>
+</html>
