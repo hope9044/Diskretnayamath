@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html>
+    
+<head>
+<title>Lab2</title>
+</head>
+
+<boby>
+<script>
+/*                                                              *     
+ * Глобальные перемнные                                         *
+ *                                                              */
+
+var ref = 0;
+var simm = 0;
+var cosimm = 0;
+var trans = 0;
+
+
+
+
+function Validate(arr){
+	/**                                        
+	* Функция Validate проверка массива на пустые или  повторяющиеся значения
+	*                                                     
+	*                                                              
+	* @param arr                                                  
+	*                                                              
+	* return NULL                                                                                                        
+	* Splice позволяет нам удалять лишние элементы массива (в случае повторения)                                    
+	*                                                              
+	*                                                              */
+    for(var i = 0; i < arr.length; i++){
+        if(arr[i] == ""){
+            arr.splice(i, 1);
+            i--;
+        } else if (arr[i] == " ") {
+            arr.splice(i, 1);
+            i--;
+        }
+    }
+    for(var i = 0; i < arr.length; i++){
+        for(var j = 0; j < arr.length; j++){
+            if(j == i) {
+                continue;
+            }
+            if (arr[i] == arr[j]){
+                arr.splice(j, 1);
+                i--;
+                break;
+            }
+        }
+    }
+	
+
+}
+
+
+                                                            
+function GetUserData(){
+	/*                                                             
+	* Функция GetUserData - валидация и вывод результата           
+	*                                                                                                
+	*  @ param arr - массив                                        
+	*  @ param id - id массивa        
+	*  @ param n - максимальное введённое число(размер матрицы) 
+	*  @ param Mat - получившаяся матрица размера n*n       
+	*                                                                                                                       
+	*  Метод split позволяет разбить строки на массив подстрок, используя заданную строку разделитель для определения                                                   
+	*/  
+
+	document.getElementById("result").innerHTML = ""
+	var arr1 = document.getElementById('arr').value;
+	var arr = new Array();
+	var Mat = new Array();
+	var n = 0;
+	arrV = new Array();
+	arr = arr1.split(";"); //раделяем строки на массив подстрок
+	Validate(arr);
+
+		for(var i = 0; i < arr.length; i++) {
+			var arrV = arr[i].split(",");        /*разбиваем подстроки на отдельные элементы и выполняем поиск максимального значения, введённого пользователем
+												также проводим валидацию на отрицательные числа*/
+			if(arrV[0] < 0){
+				alert("Неверно введена " + (i+1) +"-я пара");
+				return false;
+			}
+			if(arrV[1] < 0){
+				alert("Неверно введена" + (i+1) +"-я пара");
+				return false;
+			}
+			if(arrV[0] > n){
+				n = arrV[0];
+			}
+			if(arrV[1] > n){
+				n = arrV[1];
+			}
+		}
+		
+		
+		for(var i = 0; i < n; i++) {  
+			Mat[i] = new Array();
+			for(var j = 0; j < n; j++){
+				Mat[i][j] = 0;				//заполняем матрицу nxn нулями
+			}
+		}
+		
+		for(var i = 0; i < arr.length; i++) {   //заменяем нули единицами в местах где координата матрицы равна значению, введённому пользователем
+			var a = arr[i].split(",");
+			Mat[a[0] - 1][a[1] - 1] = 1;
+		}
+		
+		Reflex(Mat, n);
+		Simm(Mat, n);
+		Cosimm(Mat, n);
+		Trans(Mat, n);
+
+
+	//Вывод результата в зависимости от условий
+
+		if(ref > 0){
+			document.getElementById("result").innerHTML += "Свойство рефлексивности <b>+</b> <br>"
+		}
+		if(simm > 0){
+			document.getElementById("result").innerHTML += "Свойство симметричности <b>+</b><br>"
+		}
+		if(cosimm > 0){
+			document.getElementById("result").innerHTML += "Свойство кососимметричности <b>+</b><br>"
+		}
+		if(trans > 0){
+			document.getElementById("result").innerHTML += "Свойство транзитивности <b>+</b><br>"
+		}
+		if(ref == 0){
+			document.getElementById("result").innerHTML += "Свойство рефлексивности <b>-</b><br>"
+		}
+		if(simm == 0){
+			document.getElementById("result").innerHTML += "Свойство симметричности <b>-</b><br>"
+		}
+		if(cosimm == 0){
+			document.getElementById("result").innerHTML += "Свойство кососимметричности <b>-</b><br>"
+		}
+		if(trans == 0){
+			document.getElementById("result").innerHTML += "Свойство транзитивности <b>-</b><br>"
+		}
+	}
+
+
+
+/*                                                              
+ * Функция Reflex проверка на рефлексивность                    
+ *                                                              
+ * Проверяем введенное отношение на свойство рефлексивности. Находим количество пар вида xRx, причем (x,x) принадлежат R. Значит отношение рефлексивно    
+ * Для проверки проходимся циклом по диагонали, если количествое единиц на главной диагонали равно n - отношение рефлексивно                       
+ *                                                              
+ * @param n                                                  
+ * @param Mat       
+ * return ref                                       
+ */
+
+function Reflex(Mat, n) {
+		var Ked = 0;
+		j = 0;
+		for (i = 0; i < n; i++) {
+			j = i;
+			if (Mat[i][j] == 1) {
+			Ked++;
+			}
+		}
+	if (Ked == n) {
+		ref++;
+	}
+	if (Ked != n) {
+		ref = 0;
+	}
+  return ref;
+}
+
+/*                                                              
+ * Функция Simm проверка на симметричность                       
+ *                                                              
+ * Проверяем отношения на симметричность, т.е находим наличие пары xRy и yRx в массиве проходимся циклом по матрице и проверяем наличие в матрице 
+   симметричных относительно главной диагонали элементов              
+ * @param arr                                                   
+ * @param n                                                             
+ * return NULL                                                
+ */
+
+function Simm(Mat, n) {
+	var flag = true;
+	for (var i = 0; i < n; ++i){
+		if (flag){
+			for (var j = 0; j < n; ++j){
+				if (Mat[i][j] != Mat[j][i]){
+					flag = false;
+					break;
+				}
+			}
+		}
+	}
+	if (flag) {
+		simm++;
+	}
+	if (flag == false) {
+		simm = 0;
+	}
+}
+
+/*                                                              
+ * Функция Cosimm проверка на кососимметричность  т.е проверяем отстутсвие пары xRy и yRx в массиве, учитывая исключение 0R0                                    
+ * проходим в циклом по матрице и проверяем, что элементы, симметричные главной диагонали не равны единицам и не лежат на главной диагонали.                                                             
+ * @param arr                                                   
+ * @param n                                                
+ * return NULL                                                  
+ */
+
+function Cosimm(Mat, n){
+    var flag = true;
+	for (var i = 0; i < n; ++i){
+		if (flag){
+			for (var j = 0; j < n; ++j){
+				if (Mat[i][j] != Mat[j][i] && i != j){
+					flag = false;
+					break;
+				}
+			}
+		}
+	}
+	if(flag){
+		cosimm = 0;
+	}
+	else{
+		cosimm++;
+	}	
+}
+
+ /*                                                             
+ * Функция Trans проверка на транзитивность              
+ *                                                              
+ * Проверяем на кососимметричность, т.е проверяем наличие пар вида xRy yRz xRz в массиве  \
+ * создаём второй массив, который является первым массивом умноженным на самого себя и проходимся циклом по второму массиву, проверяя наличие единиц на месте нулей 
+ * @param arr                                                   
+ * @param n                                                   
+ * return NULL                                                  
+ */
+function Trans(Mat, n){
+	var Mat2 = [];
+	for(var i = 0; i < n; i++) {
+		Mat2[i] = [];
+		for(var j = 0; j < n; j++) {
+			Mat2[i][j] = 0;
+		}
+	}
+	for(var i = 0; i < n; i++ ) {
+		for(var j = 0; j < n; j++) {
+			for (var d = 0; d < n; d++) {
+				if ((Mat[d][j] == 1) && (Mat[i][d] == 1)){
+					Mat2[i][j] = 1;
+					break;
+				}
+				Mat2[i][j] = 0;
+			}
+		}
+	}
+	var k = 0;
+	for (var i = 0; i < n; i++) {
+		for (var j = 0; j < n; j++) {
+			if ((Mat[i][j] == 0) && (Mat2[i][j] == 1)){
+			k++;
+			}
+		}
+	}
+	if (k == 0) {
+		trans++;
+	}
+	else{
+		trans = 0;
+	}
+}
+
+
+</script>
+
+<div>
+    <form>
+        Ваши элементы
+        <input type="text" id="arr">
+        <input class='but' type="button" value="Выполнить" onClick="GetUserData('arr')">
+    </form><br>
+    <p>    
+        Формат ввода<br>
+        
+		<li>Каждая пара разделяется точкой с запятой(;)</li>
+		<li>Каждый элемент в паре разделяется запятой(,)</li>
+		<li>Точка с запятой не ставится после последней пары</li><br>
+        Пример: <li>1,1; 1,1; 1,1</li>или же 
+		<li>1,2; 1,3; 3,1; 2,3; 2,2</li><br>
+        Проверка: <br>
+        <li>Рефлексивность: 1,1; 2,2; 3,3<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; или 4,4; 5,5; 6,6 </li>
+        <li>Симметричность: 1,3; 3,1<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; или 1,2; 2,1  </li>
+        <li>Кососимметричность: 1,2; 1,3; 1,4<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; или 1,5; 1,6; 1,7</li>
+        <li>Транзитивность: 1,2; 2,3; 1,3<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; или 1,4; 4,6; 1,6</li>
+        <br>
+    </p>
+
+
+</div>
+<p>Cвойства </p>
+<div id="result"></div>
+
+</boby>
+
+</html>
